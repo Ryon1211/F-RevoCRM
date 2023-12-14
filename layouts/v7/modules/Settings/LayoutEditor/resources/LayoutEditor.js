@@ -677,12 +677,18 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
 							}
 							thisInstance.reArrangeBlockFields(block);
 						}
-					}, function () {
+					}, function (err) {
 						app.helper.hideProgress();
 						saveButton.removeAttr('disabled');
-						app.helper.showAlertNotification({
-							'message': app.vtranslate('JS_MAXIMUM_HEADER_FIELDS_ALLOWED', thisInstance.maxNumberOfHeaderFields)
-						});
+						if(err) {
+							app.helper.showErrorNotification({
+								'message': app.vtranslate(err.message)
+							});
+						}else {
+							app.helper.showAlertNotification({
+								'message': app.vtranslate('JS_MAXIMUM_HEADER_FIELDS_ALLOWED', thisInstance.maxNumberOfHeaderFields)
+							});
+						}
 					});
 				} else {
 					thisInstance.addCustomField(blockId, form).then(
@@ -1600,6 +1606,9 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
 								thisInstance.reArrangeBlockFields(block);
 								app.helper.showSuccessNotification({'message': app.vtranslate('JS_CUSTOM_FIELD_DELETED')});
 							}, function (error, err) {
+								app.helper.showErrorNotification({
+									'message': app.vtranslate(error.message)
+								});							
 							});
 					});
 		});
@@ -1629,7 +1638,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
 					}
 					aDeferred.resolve(data);
 				} else {
-					aDeferred.reject();
+					aDeferred.reject(err);
 				}
 			});
 		return aDeferred.promise();
@@ -1693,7 +1702,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
 						app.helper.showSuccessNotification(params);
 						aDeferred.resolve(data);
 					} else {
-						aDeferred.reject();
+						aDeferred.reject(err);
 					}
 				});
 		}

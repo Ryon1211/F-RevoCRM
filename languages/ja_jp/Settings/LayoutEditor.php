@@ -227,4 +227,6 @@ $jsLanguageStrings = array(
 	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => '選択した項目を重複チェックに設定しました',
 	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => '選択した項目を重複チェックに設定できませんでした',
 	'JS_DUPLICATE_CHECK_DISABLED' => '重複チェックを無効にしました',
+	'JS_IS_MODULE_LABEL_FIELD_CAN_NOT_DISABLED' => 'ラベル項目は非表示にできません',
+	'JS_IS_MODULE_LABEL_FIELD_CAN_NOT_DELETE' => 'ラベル項目は削除できません',
 );

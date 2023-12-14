@@ -116,6 +116,10 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 		$fieldInstance->set('defaultvalue', $defaultValue);
 		$response = new Vtiger_Response();
         try{
+            if($presence == "1" && $this->isModuleLabelField($fieldInstance)) {
+                throw new Exception('JS_IS_MODULE_LABEL_FIELD_CAN_NOT_DISABLED');
+            }
+            
             $fieldInstance->save();
 			$fieldInstance = Settings_LayoutEditor_Field_Model::getInstance($fieldId);
 			$fieldLabel = decode_html($request->get('fieldLabel'));
@@ -156,6 +160,10 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
         }
 
         try{
+            if($this->isModuleLabelField($fieldInstance)) {
+                throw new Exception('JS_IS_MODULE_LABEL_FIELD_CAN_NOT_DELETE');
+            }
+            
             $this->_deleteField($fieldInstance);
         }catch(Exception $e) {
             $response->setError($e->getCode(), $e->getMessage());
@@ -229,5 +237,23 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 
     public function validateRequest(Vtiger_Request $request) {
         $request->validateWriteAccess();
+    }
+    
+    private function isModuleLabelField($fieldInstance){
+        global $adb;
+
+        $tabId = $fieldInstance->getModuleId();
+        $sql = "SELECT fieldname FROM vtiger_entityname WHERE tabid=?";
+        $result = $adb->pquery($sql, [$tabId]);
+        
+        $labelFields = [];
+        if(0 < $adb->num_rows($result)) {
+            $result = $adb->query_result($result, 0, 'fieldname');
+            $labelFields = explode(',', $result);
+            
+            return in_array($fieldInstance->getName(), $labelFields);
+        }
+        
+        return false;
     }
 }

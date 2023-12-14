@@ -796,6 +796,36 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		$sql ="update vtiger_modcomments set userid=? where userid=?"; 
 		$db->pquery($sql, array($newOwnerId, $userId));
 
+		// vitger_inviteesテーブルの値を更新する 
+		$activityIdSql = "SELECT activityid, inviteeid 
+				FROM vtiger_invitees 
+				WHERE inviteeid IN (?, ?) 
+				GROUP BY activityid 
+				HAVING (COUNT(activityid)) = 1 AND inviteeid=?";
+		$result = $db->pquery($activityIdSql, array($newOwnerId, $userId, $userId));
+
+		$activityIds = [];
+		for($i=0; $i<$db->num_rows($result);$i++) {
+		$activityIds[] = $db->query_result($result, $i, 'activityid');
+		}
+
+		// 変更先のユーザーで登録済みの場合を除いてUPDATEをする
+		$updateSql = "UPDATE vtiger_invitees 
+					SET inviteeid=? 
+					WHERE inviteeid=? 
+						AND activityid IN (". generateQuestionMarks($activityIds) .")"; 
+		$userIds =  [$newOwnerId, $userId];
+		$searchParams = array_merge($userIds, $activityIds);
+		$db->pquery($updateSql, $searchParams);
+
+		// 変更先のユーザーで登録済みのactivityidを持つレコードは削除
+		$deleteSql ="DELETE FROM vtiger_invitees WHERE inviteeid=?"; 
+		$db->pquery($deleteSql, array($userId));
+
+		$sql = "DELETE FROM vtiger_users WHERE id=?";
+		$db->pquery($sql, array($userId));
+		
+		
 		$sql = "DELETE FROM vtiger_users WHERE id=?";
 		$db->pquery($sql, array($userId));
 	}
