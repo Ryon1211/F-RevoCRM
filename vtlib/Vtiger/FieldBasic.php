@@ -69,7 +69,7 @@ class Vtiger_FieldBasic {
 		$this->generatedtype = $valuemap['generatedtype'];
 		$this->readonly      = $valuemap['readonly'];
 		$this->presence      = $valuemap['presence'];
-		$this->defaultvalue  = $valuemap['defaultvalue'];
+		$this->defaultvalue = mb_strlen(trim($valuemap['defaultvalue'])) !== 0 ? $valuemap['defaultvalue'] : '';
 		$this->quickcreate = $valuemap['quickcreate'];
 		$this->sequence = $valuemap['sequence'];
 		$this->summaryfield = $valuemap['summaryfield'];
