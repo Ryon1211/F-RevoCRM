@@ -10,7 +10,12 @@
 
 class Calendar_Calendar_View extends Vtiger_Index_View {
 
+	protected $isLimitShowMonthEvents = false;
+
 	public function preProcess(Vtiger_Request $request, $display = true) {
+		require_once 'config.customize.php';
+		$this->isLimitShowMonthEvents = $isLimitShowMonthEvents;
+		
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
 		$viewer->assign('MODULE_NAME', $moduleName);
@@ -18,6 +23,7 @@ class Calendar_Calendar_View extends Vtiger_Index_View {
 		$viewer->assign('IS_CREATE_PERMITTED', $moduleModel->isPermitted('CreateView'));
 		$viewer->assign('IS_MODULE_EDITABLE', $moduleModel->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $moduleModel->isPermitted('Delete'));
+		$viewer->assign('IS_LIMIT_SHOW_MONTH_EVENTS', $this->isLimitShowMonthEvents ? '1' : '0');
 
 		parent::preProcess($request, false);
 		if($display) {

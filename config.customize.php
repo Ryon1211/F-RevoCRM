@@ -8,3 +8,4 @@ $hostfiledirectory = "/var/www/html2pdf/";//PDF作成場所（Linux）
 #$hostfiledirectory = "D:/Applications/F-RevoCRM/crm/test/pdf/";//PDF作成場所（Windows）
 $dokerfiledirectory = "/html2pdf/";//コマンド実行の場合はコメントアウトする
 $show_subordinate_roles_list = true;// trueの場合：共有リスト欄に下位の役割が作成した全てのリストを表示。
+$isLimitShowMonthEvents = true;// trueの場合：月表示の場合、全てのイベントを表示。

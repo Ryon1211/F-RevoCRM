@@ -34,5 +34,5 @@
 		<div id="sidebar-essentials" class="sidebar-essentials {if $LEFTPANELHIDE eq '1'} hide {/if}">
 			{include file="partials/SidebarEssentials.tpl"|vtemplate_path:$MODULE}
 		</div>
-		<div class="CalendarViewPageDiv content-area {if $LEFTPANELHIDE eq '1'} full-width {/if}" id="CalendarViewContent">
+		<div class="CalendarViewPageDiv content-area {if $LEFTPANELHIDE eq '1'} full-width {/if}" id="CalendarViewContent" data-is-limit-show-month-events={$IS_LIMIT_SHOW_MONTH_EVENTS}>
 {/strip}

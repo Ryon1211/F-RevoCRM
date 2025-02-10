@@ -1903,6 +1903,8 @@ Vtiger.Class("Calendar_Calendar_Js", {
 		URL_Search.delete("calendarStartDate");
 		history.replaceState('', '', 'index.php?' + URL_Search.toString());
 
+		var isLimitMonthEvents = $('#CalendarViewContent').data('isLimitShowMonthEvents') == 1;
+
 		var calenderConfigs = {
 			header: {
 				left: 'month,agendaWeek,agendaDay,vtAgendaList',
@@ -1936,7 +1938,7 @@ Vtiger.Class("Calendar_Calendar_Js", {
 			firstDay: thisInstance.daysOfWeek[thisInstance.getUserPrefered('start_day')],
 			scrollTime: thisInstance.getUserPrefered('start_hour'),
 			editable: true,
-			eventLimit: true,
+			eventLimit: isLimitMonthEvents,
 			defaultDate:defaultDate,
 			defaultView:defaultView,
 			slotLabelFormat: userDefaultTimeFormat,
