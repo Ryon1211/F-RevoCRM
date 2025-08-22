@@ -559,6 +559,15 @@ class Calendar_FetchOverlapEventsBeforeSave_Action extends Vtiger_BasicAjax_Acti
 		$recordId  = $request->get('record_id');
 		$startDateTime = $dateStart.' '.$timeStart;
 		$endDateTime   = $dateEnd.' '.$timeEnd;
+
+		// ドラッグアンドドロップ操作で「終日の予定」を「終日ではない予定」に変更した場合
+		// デフォルトで終了時間が2時間後になる
+		if(empty($dateEnd) && empty($timeEnd) 
+			&& ($allDayFlg === 'off' || $allDayFlg == 'false')) {
+			$endDateTime = (new DateTime($dateStart.' '.$timeStart))
+					->modify('+7200 seconds')
+					->format('Y-m-d H:i:s');
+		}
 		
 		// 繰り返し活動場合
 		if(count($recurringDays) > 1) {
@@ -566,13 +575,12 @@ class Calendar_FetchOverlapEventsBeforeSave_Action extends Vtiger_BasicAjax_Acti
 			foreach($recurringDays as $startDay) {
 				$recurringStartDateTime = $startDay.' '.$timeStart;
 				$recurringEndDateTime = (new DateTime($recurringStartDateTime))
-						->modify(+$intervalSec.' seconds')
+						->modify('+' .$intervalSec. ' seconds')
 						->format('Y-m-d H:i:s');
 				
 				[ 'start' => $start, 'end' => $end ] = 
 					$this->getDateTimeValues($recurringStartDateTime, $recurringEndDateTime, $allDayFlg);
 				$result = $this->fetchOverlapEventIds($start, $end, $checkOverlapUserIds, $recordId, true);
-				// $overlapEvents = array_unique(array_merge($overlapEvents, $result));
 				$overlapEvents += $result;
 			}
 		}else {
